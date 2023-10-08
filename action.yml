@@ -30,12 +30,12 @@ runs:
       run: | 
         git clone ${{inputs.TARGET_REPO_URL}}
         cd ${{env.TARGET_REPO_NAME}}
-    - name: "Copy all files"
+    - name: Copy all files
       shell: bash
       #copies files into Target Repo's Directory
       run: |
-        rsync -av --exclude='./' ../ ./ 
-    - name: 'Check Out to Target Repo'
+        rsync -av --exclude='./' --exlude='../.git' ../ ./ 
+    - name: Check Out to Target Repo
       uses: actions/checkout@v4
       with:
         #Should be in the form "owner/repoName"
@@ -50,7 +50,7 @@ runs:
         git config user.name ${{inputs.NAME}}
         git config user.email ${{inputs.USER_EMAIL}}
     #Should be the name of the TARGET repo branch
-    - name: "Perform changes to files and directories"
+    - name: Perform changes to files and directories
       shell: bash
       run: |
         git add *
