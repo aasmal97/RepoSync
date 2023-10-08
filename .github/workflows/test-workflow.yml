@@ -1,13 +1,17 @@
-name: "Test Workflow"
+name: "Test Workflow 3"
 on: [push, pull_request]
 jobs:
   Test-Workflow:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - name: Create Env
+    - uses: actions/checkout@v4
+    - name: Test deploy
       uses: ./
       with: 
-        REACT_APP_SECRETS: ${{toJson(secrets)}}
-    - name: List Env file
-      run: ls -a
+        TARGET_REPO_URL: https://github.com/aasmal97/Study-AI.git
+        TARGET_REPO_BRANCH: development
+        TARGET_REPO_GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_ACCESS_TOKEN }} 
+        BOT_NAME: testing-bot
+        BOT_EMAIL: arkyasmal@gmail.com
+     
+
