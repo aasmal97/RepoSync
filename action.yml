@@ -47,7 +47,7 @@ runs:
     - name: Setup git config for private repo
       shell: bash
       run: |
-        git config user.name ${{inputs.NAME}}
+        git config user.name ${{inputs.BOT_NAME}}
         git config user.email ${{inputs.BOT_EMAIL}}
     #Should be the name of the TARGET repo branch
     - name: Perform changes to files and directories
