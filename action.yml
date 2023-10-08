@@ -1,0 +1,53 @@
+name: repo-sync
+author: Arky Asmal
+description: Sync one repository branch, with the same or another repo branch
+inputs:
+  TARGET_REPO_URL:
+    required: true
+  TARGET_REPO_BRANCH: 
+    required: true
+  TARGET_REPO_GITHUB_ACCESS_TOKEN:
+    required: true
+  BOT_NAME: 
+    required: true
+  BOT_EMAIL:
+    required: true 
+runs:
+  using: 'composite'
+  steps: 
+    - name: "Checkout current branch" 
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        ref: ${{github.event.after}}
+    - name: 'Get Commit Message'
+      run: |
+        MSG=$(git log --format=%B -n 1 ${{github.event.after}})
+        echo "::set-env name=COMMIT_MESSAGE::${MSG}"
+    - name: "Clone Target Repo"
+    #Should be the url of the target repo
+      run: | 
+        git clone ${{env.TARGET_REPO_URL}}
+        cd ${{env.TARGET_REPO_NAME}}
+    - name: "Copy all files into Target Repo's Directory"
+      run: |
+        cp -r ../* .
+    - name: 'Check Out to Target Repo'
+      uses: actions/checkout@v4
+      with:
+        #Should be in the form "owner/repoName"
+        repository: ${{env.TARGET_REPO_PATH}}
+        #Should be the name of the TARGET repo branch
+        ref: ${{ inputs.TARGET_REPO_BRANCH}}
+        #should be your Github Private Access Token, that owns the target repo
+        token: ${{ inputs.TARGET_REPO_GITHUB_ACCESS_TOKEN }}
+    - name: Setup git config for private repo
+      run: |
+        git config user.name ${{inputs.NAME}}
+        git config user.email ${{inputs.USER_EMAIL}}
+    #Should be the name of the TARGET repo branch
+    - name: "Perform changes to files and directories"
+      run: |
+        git add *
+        git commit -m ${{env.COMMIT_MESSAGE}}
+        git push origin ${{inputs.TARGET_REPO_BRANCH}}
