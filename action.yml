@@ -30,11 +30,6 @@ runs:
       run: | 
         git clone ${{inputs.TARGET_REPO_URL}}
         cd ${{env.TARGET_REPO_NAME}}
-    - name: Copy all files
-      shell: bash
-      #copies files into Target Repo's Directory
-      run: |
-        rsync -av --exclude='./' --exclude='.git/' ../ ./ 
     - name: Check Out to Target Repo
       uses: actions/checkout@v4
       with:
@@ -44,12 +39,21 @@ runs:
         ref: ${{ inputs.TARGET_REPO_BRANCH}}
         #should be your Github Private Access Token, that owns the target repo
         token: ${{ inputs.TARGET_REPO_GITHUB_ACCESS_TOKEN }}
-    - name: Setup git config for private repo
+    - name: Setup git config for target repo
       shell: bash
       run: |
         git config user.name ${{inputs.BOT_NAME}}
         git config user.email ${{inputs.BOT_EMAIL}}
-    #Should be the name of the TARGET repo branch
+    - name: Remove previous files
+      continue-on-error: true
+      shell: bash
+      run: |
+        git rm *
+    - name: Copy all files
+      shell: bash
+      #copies files into Target Repo's Directory
+      run: |
+        rsync -av --exclude='./' --exclude='.git/' ../ ./ 
     - name: Perform changes to files and directories
       shell: bash
       run: |
