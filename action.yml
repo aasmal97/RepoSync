@@ -24,10 +24,14 @@ runs:
       run: |
         MSG=$(git log --format=%B -n 1 ${{github.event.after}})
         echo "::set-env name=COMMIT_MESSAGE::${MSG}"
+    - name: "Set Target Repo Env Variables"
+      uses: ./parseGithubUrl 
+      with: 
+        TARGET_REPO_URL: ${{inputs.TARGET_REPO_URL}}
     - name: "Clone Target Repo"
     #Should be the url of the target repo
       run: | 
-        git clone ${{env.TARGET_REPO_URL}}
+        git clone ${{inputs.TARGET_REPO_URL}}
         cd ${{env.TARGET_REPO_NAME}}
     - name: "Copy all files into Target Repo's Directory"
       run: |
