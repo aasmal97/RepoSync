@@ -25,7 +25,7 @@ runs:
         MSG=$(git log --format=%B -n 1 ${{github.event.after}})
         echo "::set-env name=COMMIT_MESSAGE::${MSG}"
     - name: "Set Target Repo Env Variables"
-      uses: ./parseGithubUrl 
+      uses: ./parseGithubUrl
       with: 
         TARGET_REPO_URL: ${{inputs.TARGET_REPO_URL}}
     - name: "Clone Target Repo"

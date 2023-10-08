@@ -1,0 +1,9 @@
+name: Parse Github URL
+author: Arky Asmal
+description: Parse github url, and supply owner, repo name, and repo path into local environment
+inputs:
+  TARGET_REPO_URL:
+    required: true
+runs:
+  using: 'node18'
+  main: 'dist/index.js'
