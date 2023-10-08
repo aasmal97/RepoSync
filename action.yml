@@ -33,9 +33,9 @@ runs:
     - name: "Copy all files"
       shell: bash
       #copies files into Target Repo's Directory
-      run: |
-        rsync -av --exclude='./' ../ .
       # cp -r ../* .
+      run: |
+        rsync -av --exclude='./' '../' './'
     - name: 'Check Out to Target Repo'
       uses: actions/checkout@v4
       with:
