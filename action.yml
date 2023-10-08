@@ -58,5 +58,5 @@ runs:
       shell: bash
       run: |
         git add *
-        git commit -m ${{env.COMMIT_MESSAGE}}
+        git commit -m '${{env.COMMIT_MESSAGE}}'
         git push origin ${{inputs.TARGET_REPO_BRANCH}}
