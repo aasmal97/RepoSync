@@ -15,7 +15,7 @@ jobs:
     - name: Test deploy
       uses: ./
       with: 
-        TARGET_REPO_URL: https://github.com/aasmal97/Study-AI.git
+        TARGET_REPO_URL: https://github.com/aasmal97/RepoSync.git
         TARGET_REPO_BRANCH: development
         TARGET_REPO_GITHUB_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }} 
         BOT_NAME: testing-bot

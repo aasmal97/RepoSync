@@ -15,5 +15,5 @@ jobs:
     - name: "Parse Github url"
       uses: ./parseGithubUrl
       with: 
-        TARGET_REPO_URL: https://github.com/aasmal97/Study-AI.git
+        TARGET_REPO_URL: https://github.com/aasmal97/RepoSync.git
      
