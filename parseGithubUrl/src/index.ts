@@ -1,4 +1,5 @@
 import * as core from "@actions/core";
+import { context } from "@actions/github";
 const parseRepoURL = (githubUrl: string) => {
   // Parse the URL
   const parsedUrl = new URL(githubUrl);
@@ -18,6 +19,8 @@ const parseRepoURL = (githubUrl: string) => {
 };
 export const main = async () => {
   const targetRepoURL = core.getInput("TARGET_REPO_URL");
+  const commitMsg = context.payload.head_commit.message;
+  core.exportVariable("COMMIT_MESSAGE", commitMsg);
   const repoURLData = parseRepoURL(targetRepoURL);
   if(!repoURLData) return
   const dataEntries = Object.entries(repoURLData);

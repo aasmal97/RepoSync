@@ -24,11 +24,6 @@ runs:
       uses: ./parseGithubUrl
       with: 
         TARGET_REPO_URL: ${{inputs.TARGET_REPO_URL}}
-    - name: Get Commit Message
-      shell: bash
-      run: |
-        MSG=$(git log --format=%B -n 1 ${{github.event.after}})
-        echo "::set-env name=COMMIT_MESSAGE::${MSG}"
     - name: Clone Target Repo
       shell: bash 
     #Should be the url of the target repo
