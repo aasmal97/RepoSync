@@ -15,25 +15,29 @@ inputs:
 runs:
   using: 'composite'
   steps: 
-    - name: "Checkout current branch" 
+    - name: Checkout current branch
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
         ref: ${{github.event.after}}
-    - name: 'Get Commit Message'
-      run: |
-        MSG=$(git log --format=%B -n 1 ${{github.event.after}})
-        echo "::set-env name=COMMIT_MESSAGE::${MSG}"
-    - name: "Set Target Repo Env Variables"
+    - name: Set Target Repo Env Variables
       uses: ./parseGithubUrl
       with: 
         TARGET_REPO_URL: ${{inputs.TARGET_REPO_URL}}
-    - name: "Clone Target Repo"
+    - name: Get Commit Message
+      shell: bash
+      run: |
+        MSG=$(git log --format=%B -n 1 ${{github.event.after}})
+        echo "::set-env name=COMMIT_MESSAGE::${MSG}"
+    - name: Clone Target Repo
+      shell: bash 
     #Should be the url of the target repo
       run: | 
         git clone ${{inputs.TARGET_REPO_URL}}
         cd ${{env.TARGET_REPO_NAME}}
-    - name: "Copy all files into Target Repo's Directory"
+    - name: "Copy all files"
+      shell: bash
+      #copies files into Target Repo's Directory
       run: |
         cp -r ../* .
     - name: 'Check Out to Target Repo'
@@ -46,11 +50,13 @@ runs:
         #should be your Github Private Access Token, that owns the target repo
         token: ${{ inputs.TARGET_REPO_GITHUB_ACCESS_TOKEN }}
     - name: Setup git config for private repo
+      shell: bash
       run: |
         git config user.name ${{inputs.NAME}}
         git config user.email ${{inputs.USER_EMAIL}}
     #Should be the name of the TARGET repo branch
     - name: "Perform changes to files and directories"
+      shell: bash
       run: |
         git add *
         git commit -m ${{env.COMMIT_MESSAGE}}
