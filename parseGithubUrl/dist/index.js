@@ -7926,7 +7926,8 @@ module.exports = __toCommonJS(src_exports);
 var core = __toESM(require_core());
 var import_github = __toESM(require_github());
 var parseRepoURL = (githubUrl) => {
-  const parsedUrl = new URL(githubUrl);
+  const removeExtension = githubUrl.replace(/\.git$/, "");
+  const parsedUrl = new URL(removeExtension);
   const pathParts = parsedUrl.pathname.split("/").filter((part) => part !== "");
   if (pathParts.length === 2) {
     const [ownerName, repoName] = pathParts;

@@ -2,7 +2,8 @@ import * as core from "@actions/core";
 import { context } from "@actions/github";
 const parseRepoURL = (githubUrl: string) => {
   // Parse the URL
-  const parsedUrl = new URL(githubUrl);
+  const removeExtension = githubUrl.replace(/\.git$/, "");
+  const parsedUrl = new URL(removeExtension);
   // Extract owner/organization name and repo name
   const pathParts = parsedUrl.pathname.split("/").filter((part) => part !== "");
   if (pathParts.length === 2) {
