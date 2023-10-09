@@ -33,14 +33,11 @@ runs:
       shell: bash 
       run: | 
         git clone ${{inputs.TARGET_REPO_URL}}
-    - name: Get branches
+    - name: Add remote
       shell: bash
+      continue-on-error: true
       run: |
-        git branch -r
-    # - name: Add remote
-    #   shell: bash
-    #   run: |
-    #     git remote add 
+        git remote add source add ${{format(https://github.com/{0}/{1}.git, github.repository_owner, github.event.repository.name)}}
     # - name: Check Out to Target Repo
     #   uses: actions/checkout@v4
     #   with:
@@ -50,6 +47,10 @@ runs:
     #     ref: ${{ inputs.TARGET_REPO_BRANCH}}
     #     #should be your Github Private Access Token, that owns the target repo
     #     token: ${{ inputs.TARGET_REPO_GITHUB_ACCESS_TOKEN }}
+    - name: Get branches
+      shell: bash
+      run: |
+        git branch -r
     - name: Setup git config for target repo
       shell: bash
       run: |
