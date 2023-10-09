@@ -32,7 +32,7 @@ runs:
     - name: Clone Target Repo
       shell: bash 
       run: | 
-        git clone ${{inputs.TARGET_REPO_URL}}
+        git clone -o target ${{inputs.TARGET_REPO_URL}}
     - name: Add remote
       shell: bash
       continue-on-error: true
