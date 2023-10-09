@@ -15,10 +15,10 @@ inputs:
 runs:
   using: 'composite'
   steps: 
-    - name: Remove origin
-      shell: bash
-      run: |
-        git remote rm origin
+    # - name: Remove origin
+    #   shell: bash
+    #   run: |
+    #     git remote rm origin
     - name: Clear all files
       shell: bash
       #we run rm since we still want it tracked on repo, but not in our local env
