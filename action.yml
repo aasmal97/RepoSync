@@ -25,10 +25,19 @@ runs:
       #we run rm since we still want it tracked on repo, but not in our local env
       run: |
         find . ! -name ".git" -delete
+    - name: Add Target Remote with PAT
+      continue-on-error: true
+      shell: bash
+      run: |
+        git remote add target ${{env.TARGET_REPO_URL}}
+    - name: Add Target Remote without PAT
+      continue-on-error: true
+      shell: bash
+      run: |    
+        git remote add target ${{inputs.TARGET_REPO_URL}}
     - name: Clone Target Repo
       shell: bash 
       run: | 
-        git remote add target ${{env.TARGET_REPO_URL}}
         git clone -o target ${{inputs.TARGET_REPO_URL}}
     - name: Add Source remote
       shell: bash
