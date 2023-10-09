@@ -15,30 +15,42 @@ inputs:
 runs:
   using: 'composite'
   steps: 
-    - name: Checkout current branch
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        ref: ${{github.event.after}}
+    # - name: Checkout current branch
+    #   uses: actions/checkout@v4
+    #   with:
+    #     fetch-depth: 0
+    #     ref: ${{github.event.after}}
+    - name: Move Current Files in Own Repo
+      shell: bash
+      run: |
+        mkdir ${{ format('{0}_{1}',github.event.repository.name, github.github.ref_name)}} && find . -maxdepth 1 ! -name '.git' -type f -exec mv {} ${{ format('{0}_{1}',github.event.repository.name, github.github.ref_name)}}/ \;
+
     - name: Set Target Repo Env Variables
       uses: ./parseGithubUrl
       with: 
         TARGET_REPO_URL: ${{inputs.TARGET_REPO_URL}}
-    # - name: Clone Target Repo
-    #   shell: bash 
-    # #Should be the url of the target repo
-    #   run: | 
-    #     git clone ${{inputs.TARGET_REPO_URL}}
-    #     cd ${{env.TARGET_REPO_NAME}}
-    - name: Check Out to Target Repo
-      uses: actions/checkout@v4
-      with:
-        #Should be in the form "owner/repoName"
-        repository: ${{env.TARGET_REPO_PATH}}
-        #Should be the name of the TARGET repo branch
-        ref: ${{ inputs.TARGET_REPO_BRANCH}}
-        #should be your Github Private Access Token, that owns the target repo
-        token: ${{ inputs.TARGET_REPO_GITHUB_ACCESS_TOKEN }}
+    - name: Clone Target Repo
+      shell: bash 
+      run: | 
+        git clone ${{inputs.TARGET_REPO_URL}}
+        cd ${{env.TARGET_REPO_NAME}}
+    - name: Get branches
+      shell: bash
+      run: |
+        git branch -r
+    # - name: Add remote
+    #   shell: bash
+    #   run: |
+    #     git remote add 
+    # - name: Check Out to Target Repo
+    #   uses: actions/checkout@v4
+    #   with:
+    #     #Should be in the form "owner/repoName"
+    #     repository: ${{env.TARGET_REPO_PATH}}
+    #     #Should be the name of the TARGET repo branch
+    #     ref: ${{ inputs.TARGET_REPO_BRANCH}}
+    #     #should be your Github Private Access Token, that owns the target repo
+    #     token: ${{ inputs.TARGET_REPO_GITHUB_ACCESS_TOKEN }}
     - name: Setup git config for target repo
       shell: bash
       run: |
@@ -53,10 +65,11 @@ runs:
     #   shell: bash
     #   #copies files into Target Repo's Directory
     #   run: |
-    #     rsync -av --exclude='./' --exclude='.git/' ../ ./ 
-    - name: Perform changes to files and directories
-      shell: bash
-      run: |
-        git add *
-        git commit -m '${{env.COMMIT_MESSAGE}}'
-        git push -f origin ${{inputs.TARGET_REPO_BRANCH}}
+    #     rsync -av --exclude='./' --exclude='.git/' ../ ./
+    # git add *
+    # git commit -m '${{env.COMMIT_MESSAGE}}' 
+    # - name: Perform changes to files and directories
+    #   shell: bash
+    #   run: |
+    #     git reset ${{inputs.}} --hard
+    #     git push -f origin ${{inputs.TARGET_REPO_BRANCH}}
