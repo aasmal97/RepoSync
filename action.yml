@@ -79,11 +79,10 @@ runs:
       run: |
         TARGET_REPO_DEFAULT_BRANCH_NAME=$(git symbolic-ref --short HEAD) >> $GITHUB_ENV    
     - name: Create Target Repo Branch
-      if: ${{env.TARGET_REPO_BRANCH_EXISTS}} == false
+      if: env.TARGET_REPO_BRANCH_EXISTS == false
       shell: bash
       run: |
         git checkout -b ${{inputs.TARGET_REPO_BRANCH}}
-        git pull --rebase
         git push -u target ${{inputs.TARGET_REPO_BRANCH}}
         git fetch target
         git branch -avv
