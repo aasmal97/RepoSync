@@ -24,12 +24,12 @@ runs:
       uses: ./parseGithubUrl
       with: 
         TARGET_REPO_URL: ${{inputs.TARGET_REPO_URL}}
-    - name: Clone Target Repo
-      shell: bash 
-    #Should be the url of the target repo
-      run: | 
-        git clone ${{inputs.TARGET_REPO_URL}}
-        cd ${{env.TARGET_REPO_NAME}}
+    # - name: Clone Target Repo
+    #   shell: bash 
+    # #Should be the url of the target repo
+    #   run: | 
+    #     git clone ${{inputs.TARGET_REPO_URL}}
+    #     cd ${{env.TARGET_REPO_NAME}}
     - name: Check Out to Target Repo
       uses: actions/checkout@v4
       with:
@@ -44,19 +44,19 @@ runs:
       run: |
         git config user.name ${{inputs.BOT_NAME}}
         git config user.email ${{inputs.BOT_EMAIL}}
-    - name: Remove previous files
-      continue-on-error: true
-      shell: bash
-      run: |
-        git rm * -r
-    - name: Copy all files
-      shell: bash
-      #copies files into Target Repo's Directory
-      run: |
-        rsync -av --exclude='./' --exclude='.git/' ../ ./ 
+    # - name: Remove previous files
+    #   continue-on-error: true
+    #   shell: bash
+    #   run: |
+    #     git rm * -r
+    # - name: Copy all files
+    #   shell: bash
+    #   #copies files into Target Repo's Directory
+    #   run: |
+    #     rsync -av --exclude='./' --exclude='.git/' ../ ./ 
     - name: Perform changes to files and directories
       shell: bash
       run: |
         git add *
         git commit -m '${{env.COMMIT_MESSAGE}}'
-        git push origin ${{inputs.TARGET_REPO_BRANCH}}
+        git push -f origin ${{inputs.TARGET_REPO_BRANCH}}
