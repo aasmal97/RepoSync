@@ -11,7 +11,7 @@ const parseRepoURL = (githubUrl: string, accessToken: string) => {
       owner: ownerName,
       name: repoName,
       path: `${ownerName}/${repoName}`,
-      url: `https://${accessToken}@github.com/${ownerName}/${repoName}.git`,
+      url: `https://${ownerName}:${accessToken}@github.com/${ownerName}/${repoName}.git`,
     };
   } else {
     core.setFailed("Invalid GitHub URL");
