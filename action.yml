@@ -21,10 +21,10 @@ runs:
       #we run rm since we still want it tracked on repo, but not in our local env
       run: |
         find . ! -name ".git" -delete
-    - name: Remove origin
-      shell: bash
-      run: |
-        git remote rm origin
+    # - name: Remove origin
+    #   shell: bash
+    #   run: |
+    #     git remote rm origin
     - name: Set Target Repo Env Variables
       uses: ./parseGithubUrl
       with: 
