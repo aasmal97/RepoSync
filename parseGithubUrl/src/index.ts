@@ -16,7 +16,7 @@ const parseRepoURL = (githubUrl: string, accessToken?: string) => {
       }github.com/${ownerName}/${repoName}.git`,
     };
   } else {
-    core.setFailed("Invalid GitHub URL");
+    core.setFailed(`Invalid GitHub URL: ${githubUrl}`);
     return null;
   }
 };
@@ -28,7 +28,10 @@ export const main = async () => {
   if (!repoURLData) return;
   const dataEntries = Object.entries(repoURLData);
   dataEntries.forEach(([key, value]) => {
-    core.exportVariable(`${prefix}_${key.toUpperCase()}`, value);
+    core.exportVariable(
+      `${prefix ? `${prefix}_` : ""}${key.toUpperCase()}`,
+      value
+    );
   });
 };
 main();

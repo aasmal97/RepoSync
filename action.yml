@@ -21,10 +21,13 @@ runs:
         REPO_URL: ${{inputs.TARGET_REPO_URL}}
         REPO_GITHUB_ACCESS_TOKEN: ${{inputs.TARGET_REPO_GITHUB_ACCESS_TOKEN}}
         PREFIX: 'TARGET_REPO'
+    - name: Get source repository name
+      shell: bash
+      run: echo "SOURCE_REPO_NAME=" >> $GITHUB_ENV    
     - name: Set Source Repo Env Variables
       uses: ./parseGithubUrl
       with: 
-        REPO_URL: ${{format('https://github.com/{0}/{1}.git', github.repository_owner, github.event.repository.name)}}
+        REPO_URL: ${{format('https://github.com/{0}/{1}.git', github.repository_owner, env.SOURCE_REPO_NAME)}}
         PREFIX: 'SOURCE_REPO'
     - name: Store Source Branch Repo Name
       shell: bash
@@ -39,7 +42,7 @@ runs:
       shell: bash
       run: |
         git remote add source ${{env.SOURCE_REPO_URL}}
-    - name: 'Check Out to Target Repo'
+    - name: Check Out to Target Repo
       uses: actions/checkout@v4
       with:
         #Should be in the form "owner/repoName"
@@ -65,7 +68,6 @@ runs:
         git fetch source
         git fetch target
         git branch -avv
-
     - name: Create and track dev branch
       shell: bash
       run: |
@@ -83,14 +85,14 @@ runs:
       shell: bash
       run: |
         git push -f ${{env.TARGET_REPO_URL}} ${{inputs.TARGET_REPO_BRANCH}}
-    - name: 'Check Out to back to Source Repo'
-        uses: actions/checkout@v4
-        with:
-          #Should be in the form "owner/repoName"
-          repository: ${{env.SOURCE_REPO_PATH}}
-          #Should be the name of the TARGET repo branch
-          ref: ${{env.SOURCE_REPO_BRANCH}}
+    - name: Check Out to back to Source Repo
+      uses: actions/checkout@v4
+      with:
+        #Should be in the form "owner/repoName"
+        repository: ${{env.SOURCE_REPO_PATH}}
+        #Should be the name of the TARGET repo branch
+        ref: ${{env.SOURCE_REPO_BRANCH}}
     - name: Restore local files
       shell: bash
       run: |
-        git fetch && git checkout ${{format('source/{0}', github.event.repository.name)}} 
+        git fetch && git checkout ${{format('source/{0}', env.SOURCE_REPO_BRANCH)}} 
