@@ -25,7 +25,7 @@ runs:
       shell: bash
       # run: echo "SOURCE_REPO_NAME=RepoSync" >> $GITHUB_ENV    
       run: |
-        'SOURCE_REPO_NAME=${GITHUB_REPOSITORY#*/}' >> $GITHUB_ENV    
+        SOURCE_REPO_NAME=${GITHUB_REPOSITORY#*/} >> $GITHUB_ENV    
     - name: Set Source Repo Env Variables
       uses: ./parseGithubUrl
       with: 
@@ -36,7 +36,7 @@ runs:
       # run: |
       #   echo "SOURCE_REPO_BRANCH=main" >> $GITHUB_ENV
       run: |
-        'SOURCE_REPO_BRANCH=${{github.ref_name}}' >> $GITHUB_ENV    
+        SOURCE_REPO_BRANCH=${{github.ref_name}} >> $GITHUB_ENV    
     - name: Clear all files
       shell: bash
       #we run rm since we still want it tracked on repo, but not in our local env
@@ -73,11 +73,11 @@ runs:
     - name: Check if target branch exists
       shell: bash
       run: |
-        "TARGET_REPO_BRANCH_EXISTS=$(if [ -n "$(git ls-remote --heads target ${{ inputs.TARGET_REPO_BRANCH }})" ]; then echo true; else echo false; fi)" >> $GITHUB_ENV
+        TARGET_REPO_BRANCH_EXISTS=$(if [ -n "$(git ls-remote --heads target ${{ inputs.TARGET_REPO_BRANCH }})" ]; then echo true; else echo false; fi) >> $GITHUB_ENV
     - name: Get Default Target Branch Name
       shell: bash
       run: |
-        "TARGET_REPO_DEFAULT_BRANCH_NAME=$(git symbolic-ref --short HEAD)" >> $GITHUB_ENV    
+        TARGET_REPO_DEFAULT_BRANCH_NAME=$(git symbolic-ref --short HEAD) >> $GITHUB_ENV    
     - name: Create Target Repo Branch
       if: ${{env.TARGET_REPO_BRANCH_EXISTS}} == false
       shell: bash
