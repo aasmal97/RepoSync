@@ -38,14 +38,14 @@ runs:
       run: |
         git branch -r
     - name: Check Out to Target Repo
-    uses: actions/checkout@v4
-    with:
-      #Should be in the form "owner/repoName"
-      repository: ${{env.TARGET_REPO_PATH}}
-      #Should be the name of the TARGET repo branch
-      ref: ${{ inputs.TARGET_REPO_BRANCH}}
-      #should be your Github Private Access Token, that owns the target repo
-      token: ${{ inputs.TARGET_REPO_GITHUB_ACCESS_TOKEN }}
+      uses: actions/checkout@v4
+      with:
+        #Should be in the form "owner/repoName"
+        repository: ${{env.TARGET_REPO_PATH}}
+        #Should be the name of the TARGET repo branch
+        ref: ${{ inputs.TARGET_REPO_BRANCH}}
+        #should be your Github Private Access Token, that owns the target repo
+        token: ${{ inputs.TARGET_REPO_GITHUB_ACCESS_TOKEN }}
 
     - name: Merge Branches
       shell: bash
