@@ -62,7 +62,6 @@ runs:
       run: |
         git config user.name ${{inputs.BOT_NAME}}
         git config user.email ${{inputs.BOT_EMAIL}}
-        git remote set-url target 
     - name: Merge Branches
       shell: bash
       run: |
