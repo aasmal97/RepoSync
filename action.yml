@@ -64,7 +64,7 @@ runs:
     - name: Push to branch
       shell: bash
       run: |
-        git push -f target ${{inputs.TARGET_REPO_BRANCH}}
+        git push -f ${{env.TARGET_REPO_URL}} ${{inputs.TARGET_REPO_BRANCH}}
     - name: Restore local files
       shell: bash
       run: |
