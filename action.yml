@@ -36,7 +36,7 @@ runs:
       # run: |
       #   echo "SOURCE_REPO_BRANCH=main" >> $GITHUB_ENV
       run: |
-        SOURCE_REPO_BRANCH=${{github.ref_name}} >> $GITHUB_ENV    
+        echo "SOURCE_REPO_BRANCH=${{github.ref_name}}" >> $GITHUB_ENV    
     - name: Clear all files
       shell: bash
       #we run rm since we still want it tracked on repo, but not in our local env
