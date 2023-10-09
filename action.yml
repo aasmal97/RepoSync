@@ -23,6 +23,7 @@ runs:
         PREFIX: 'TARGET_REPO'
     - name: Get source repository name
       shell: bash
+      # run: echo "SOURCE_REPO_NAME=RepoSync" >> $GITHUB_ENV    
       run: echo "SOURCE_REPO_NAME=${GITHUB_REPOSITORY#*/}" >> $GITHUB_ENV    
     - name: Set Source Repo Env Variables
       uses: ./parseGithubUrl
@@ -31,6 +32,8 @@ runs:
         PREFIX: 'SOURCE_REPO'
     - name: Store Source Branch Repo Name
       shell: bash
+      # run: |
+      #   echo "SOURCE_REPO_BRANCH=main" >> $GITHUB_ENV
       run: |
         echo 'SOURCE_REPO_BRANCH=${{github.ref_name}}' >> $GITHUB_ENV    
     - name: Clear all files
@@ -38,17 +41,15 @@ runs:
       #we run rm since we still want it tracked on repo, but not in our local env
       run: |
         rm -rf *
+    - name: Check Out to Target Repo
+      uses: actions/checkout@v4
+      with:
+        repository: ${{env.TARGET_REPO_PATH}}
+        token: ${{ inputs.TARGET_REPO_GITHUB_ACCESS_TOKEN }}    
     - name: Add Source remote
       shell: bash
       run: |
         git remote add source ${{env.SOURCE_REPO_URL}}
-    - name: Check Out to Target Repo
-      uses: actions/checkout@v4
-      with:
-        #Should be in the form "owner/repoName"
-        repository: ${{env.TARGET_REPO_PATH}}
-        #should be your Github Private Access Token, that owns the target repo
-        token: ${{ inputs.TARGET_REPO_GITHUB_ACCESS_TOKEN }}    
     - name: Add Target Remote with PAT
       continue-on-error: true
       shell: bash
@@ -68,7 +69,23 @@ runs:
         git fetch source
         git fetch target
         git branch -avv
-    - name: Create and track dev branch
+    - name: Check if target branch exists
+      shell: bash
+      run: |
+        echo "TARGET_REPO_BRANCH_EXISTS=$(if [ -n "$(git ls-remote --heads target ${{ inputs.TARGET_REPO_BRANCH }})" ]; then echo true; else echo false; fi)" >> $GITHUB_ENV
+    - name: Get Default Target Branch Name
+      shell: bash
+      run: |
+        echo TARGET_REPO_DEFAULT_BRANCH_NAME=$(git symbolic-ref --short HEAD) >> $GITHUB_ENV    
+    - name: Create Target Repo Branch
+      if: ${{env.TARGET_REPO_BRANCH_EXISTS}} == false
+      shell: bash
+      run: |
+        git checkout -b ${{inputs.TARGET_REPO_BRANCH}}
+        git push -u target ${{inputs.TARGET_REPO_BRANCH}}
+        git fetch target
+        git branch -avv
+    - name:  Track Target Repo Branch
       shell: bash
       run: |
         git checkout -B ${{inputs.TARGET_REPO_BRANCH}} --track ${{format('target/{0}', inputs.TARGET_REPO_BRANCH)}}
@@ -88,9 +105,7 @@ runs:
     - name: Check Out to back to Source Repo
       uses: actions/checkout@v4
       with:
-        #Should be in the form "owner/repoName"
         repository: ${{env.SOURCE_REPO_PATH}}
-        #Should be the name of the TARGET repo branch
         ref: ${{env.SOURCE_REPO_BRANCH}}
     - name: Restore local files
       shell: bash
