@@ -3,8 +3,8 @@
 This Github Action allows a repo to push/merge changes to a another branch in a remote or same repository
 
 ## How this action works
-1. The github action first removes all local files. This prevents any collisions that may arise from have two seperate repos in the same directory
-2. Then parses the provided targeted github url for the remote repository, and adds in the personal access token to the repo url.
+1. The action first parses the provided targeted github url for the remote repository, and adds in the personal access token to the repo url.
+2. Then it removes all local files. This prevents any collisions that may arise from have two seperate repos in the same directory
 3. After, it adds the source and target repos as their own remote nodes, clones the target repo, and performs a git merge, merging the target branch with the source branch 
 4. We restore the local files removed, by pulling from the branch that triggered the workflow
 ## How to Use:
