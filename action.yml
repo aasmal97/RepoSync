@@ -23,7 +23,7 @@ runs:
     - name: Move Current Files in Own Repo
       shell: bash
       run: |
-        mkdir ${{ format('{0}_{1}',github.event.repository.name, github.github.ref_name)}} && find . -maxdepth 1 ! -name '.git' -type f -exec mv {} ${{ format('{0}_{1}',github.event.repository.name, github.github.ref_name)}}/ \;
+        mkdir ${{ format('{0}_{1}',github.event.repository.name, github.ref_name)}} && find . -maxdepth 1 ! -name '.git' -type f -exec mv {} ${{ format('{0}_{1}',github.event.repository.name, github.ref_name)}}/ \;
 
     - name: Set Target Repo Env Variables
       uses: ./parseGithubUrl
@@ -33,7 +33,6 @@ runs:
       shell: bash 
       run: | 
         git clone ${{inputs.TARGET_REPO_URL}}
-        cd ${{env.TARGET_REPO_NAME}}
     - name: Get branches
       shell: bash
       run: |
