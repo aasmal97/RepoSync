@@ -37,20 +37,24 @@ runs:
       shell: bash
       run: |
         git branch -r
-    - name: Check Out to Target Repo
-      uses: actions/checkout@v4
-      with:
-        #Should be in the form "owner/repoName"
-        repository: ${{env.TARGET_REPO_PATH}}
-        #Should be the name of the TARGET repo branch
-        ref: ${{ inputs.TARGET_REPO_BRANCH}}
-        #should be your Github Private Access Token, that owns the target repo
-        token: ${{ inputs.TARGET_REPO_GITHUB_ACCESS_TOKEN }}
+    - name: Check out to Target Repo
+      shell: bash
+      run: |
+        git checkout -b ${{inputs.TARGET_REPO_BRANCH}} --track ${{format('target/{0}', inputs.TARGET_REPO_BRANCH)}}
+    # - name: Check Out to Target Repo
+    #   uses: actions/checkout@v4
+    #   with:
+    #     #Should be in the form "owner/repoName"
+    #     repository: ${{env.TARGET_REPO_PATH}}
+    #     #Should be the name of the TARGET repo branch
+    #     ref: ${{ inputs.TARGET_REPO_BRANCH}}
+    #     #should be your Github Private Access Token, that owns the target repo
+    #     token: ${{ inputs.TARGET_REPO_GITHUB_ACCESS_TOKEN }}
 
     - name: Merge Branches
       shell: bash
       run: |
-        git merge ${{format('source/{0}', inputs.TARGET_REPO_BRANCH)}}
+        git merge ${{format('source/{0}', github.ref_name)}}
 
     - name: Setup git config for target repo
       shell: bash
