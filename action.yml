@@ -29,7 +29,7 @@ runs:
       shell: bash 
       run: | 
         git remote add target ${{env.TARGET_REPO_URL}}
-        git clone -o target ${{env.TARGET_REPO_URL}}
+        git clone -o target ${{inputs.TARGET_REPO_URL}}
     - name: Add Source remote
       shell: bash
       continue-on-error: true
