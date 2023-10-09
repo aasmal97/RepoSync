@@ -60,7 +60,7 @@ runs:
     - name: Merge Branches
       shell: bash
       run: |
-        git merge ${{format('source/{0}', github.ref_name)}}
+        git merge ${{format('source/{0}', github.ref_name)}} --allow-unrelated-histories -s recursive -X
     - name: Setup git config for target repo
       shell: bash
       run: |
