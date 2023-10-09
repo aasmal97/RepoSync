@@ -15,15 +15,10 @@ inputs:
 runs:
   using: 'composite'
   steps: 
-    # - name: Checkout current branch
-    #   uses: actions/checkout@v4
-    #   with:
-    #     fetch-depth: 0
-    #     ref: ${{github.event.after}}
     - name: Move Current Files in Own Repo
       shell: bash
       run: |
-        mkdir ${{ format('{0}_{1}',github.event.repository.name, github.ref_name)}} && find . -maxdepth 1 ! -name '.git' -type f -exec mv {} ${{ format('{0}_{1}',github.event.repository.name, github.ref_name)}}/ \;
+        mkdir ${{ format('{0}_{1}', github.event.repository.name, github.ref_name)}} && find . -maxdepth 1 ! -name '.git' -type f -exec mv {} ${{ format('{0}_{1}',github.event.repository.name, github.ref_name)}}/ \;
 
     - name: Set Target Repo Env Variables
       uses: ./parseGithubUrl
@@ -38,24 +33,35 @@ runs:
       continue-on-error: true
       run: |
         git remote add source ${{format('https://github.com/{0}/{1}.git', github.repository_owner, github.event.repository.name)}}
-    # - name: Check Out to Target Repo
-    #   uses: actions/checkout@v4
-    #   with:
-    #     #Should be in the form "owner/repoName"
-    #     repository: ${{env.TARGET_REPO_PATH}}
-    #     #Should be the name of the TARGET repo branch
-    #     ref: ${{ inputs.TARGET_REPO_BRANCH}}
-    #     #should be your Github Private Access Token, that owns the target repo
-    #     token: ${{ inputs.TARGET_REPO_GITHUB_ACCESS_TOKEN }}
     - name: Get branches
       shell: bash
       run: |
         git branch -r
+    - name: Check Out to Target Repo
+    uses: actions/checkout@v4
+    with:
+      #Should be in the form "owner/repoName"
+      repository: ${{env.TARGET_REPO_PATH}}
+      #Should be the name of the TARGET repo branch
+      ref: ${{ inputs.TARGET_REPO_BRANCH}}
+      #should be your Github Private Access Token, that owns the target repo
+      token: ${{ inputs.TARGET_REPO_GITHUB_ACCESS_TOKEN }}
+
+    - name: Merge Branches
+      shell: bash
+      run: |
+        git merge ${{format('source/{0}', inputs.TARGET_REPO_BRANCH)}}
+
     - name: Setup git config for target repo
       shell: bash
       run: |
         git config user.name ${{inputs.BOT_NAME}}
         git config user.email ${{inputs.BOT_EMAIL}}
+
+    - name: Push to branch
+      shell: bash
+      run: |
+        git push -f target ${{inputs.TARGET_REPO_BRANCH}}    
     # - name: Remove previous files
     #   continue-on-error: true
     #   shell: bash
