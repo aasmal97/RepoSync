@@ -83,6 +83,7 @@ runs:
       shell: bash
       run: |
         git checkout -b ${{inputs.TARGET_REPO_BRANCH}}
+        git pull --rebase
         git push -u target ${{inputs.TARGET_REPO_BRANCH}}
         git fetch target
         git branch -avv
