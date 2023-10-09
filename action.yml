@@ -23,7 +23,7 @@ runs:
         PREFIX: 'TARGET_REPO'
     - name: Get source repository name
       shell: bash
-      run: echo "SOURCE_REPO_NAME=" >> $GITHUB_ENV    
+      run: echo "SOURCE_REPO_NAME=${GITHUB_REPOSITORY#*/}" >> $GITHUB_ENV    
     - name: Set Source Repo Env Variables
       uses: ./parseGithubUrl
       with: 
