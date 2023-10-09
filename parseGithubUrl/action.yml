@@ -2,10 +2,12 @@ name: Parse Github URL
 author: Arky Asmal
 description: Parse github url, and supply owner, repo name, and repo path into local environment
 inputs:
-  TARGET_REPO_URL:
+  REPO_URL:
     required: true
-  TARGET_REPO_GITHUB_ACCESS_TOKEN:
+  REPO_GITHUB_ACCESS_TOKEN:
     required: true
+  PREFIX: 
+    required: false
 runs:
   using: 'node16'
   main: 'dist/index.js'

@@ -18,13 +18,34 @@ runs:
     - name: Set Target Repo Env Variables
       uses: ./parseGithubUrl
       with: 
-        TARGET_REPO_URL: ${{inputs.TARGET_REPO_URL}}
-        TARGET_REPO_GITHUB_ACCESS_TOKEN: ${{inputs.TARGET_REPO_GITHUB_ACCESS_TOKEN}}
+        REPO_URL: ${{inputs.TARGET_REPO_URL}}
+        REPO_GITHUB_ACCESS_TOKEN: ${{inputs.TARGET_REPO_GITHUB_ACCESS_TOKEN}}
+        PREFIX: 'TARGET_REPO'
+    - name: Set Source Repo Env Variables
+      uses: ./parseGithubUrl
+      with: 
+        REPO_URL: ${{format('https://github.com/{0}/{1}.git', github.repository_owner, github.event.repository.name)}}
+        PREFIX: 'SOURCE_REPO'
+    - name: Store Source Branch Repo Name
+      shell: bash
+      run: |
+        echo 'SOURCE_REPO_BRANCH=${{github.ref_name}}' >> $GITHUB_ENV    
     - name: Clear all files
       shell: bash
       #we run rm since we still want it tracked on repo, but not in our local env
       run: |
         rm -rf *
+    - name: Add Source remote
+      shell: bash
+      run: |
+        git remote add source ${{env.SOURCE_REPO_URL}}
+    - name: 'Check Out to Target Repo'
+      uses: actions/checkout@v4
+      with:
+        #Should be in the form "owner/repoName"
+        repository: ${{env.TARGET_REPO_PATH}}
+        #should be your Github Private Access Token, that owns the target repo
+        token: ${{ inputs.TARGET_REPO_GITHUB_ACCESS_TOKEN }}    
     - name: Add Target Remote with PAT
       continue-on-error: true
       shell: bash
@@ -34,10 +55,6 @@ runs:
       shell: bash 
       run: | 
         git clone -o target ${{env.TARGET_REPO_URL}}
-    - name: Add Source remote
-      shell: bash
-      run: |
-        git remote add source ${{format('https://github.com/{0}/{1}.git', github.repository_owner, github.event.repository.name)}}
     - name: View remotes
       shell: bash
       run: |
@@ -48,7 +65,8 @@ runs:
         git fetch source
         git fetch target
         git branch -avv
-    - name: Check out to Target Repo
+
+    - name: Create and track dev branch
       shell: bash
       run: |
         git checkout -B ${{inputs.TARGET_REPO_BRANCH}} --track ${{format('target/{0}', inputs.TARGET_REPO_BRANCH)}}
@@ -60,11 +78,18 @@ runs:
     - name: Merge Branches
       shell: bash
       run: |
-        git merge ${{format('source/{0}', github.ref_name)}} --allow-unrelated-histories -s recursive -X theirs
+        git merge ${{format('source/{0}', env.SOURCE_REPO_BRANCH)}} --allow-unrelated-histories -s recursive -X theirs
     - name: Push to branch
       shell: bash
       run: |
         git push -f ${{env.TARGET_REPO_URL}} ${{inputs.TARGET_REPO_BRANCH}}
+    - name: 'Check Out to back to Source Repo'
+        uses: actions/checkout@v4
+        with:
+          #Should be in the form "owner/repoName"
+          repository: ${{env.SOURCE_REPO_PATH}}
+          #Should be the name of the TARGET repo branch
+          ref: ${{env.SOURCE_REPO_BRANCH}}
     - name: Restore local files
       shell: bash
       run: |

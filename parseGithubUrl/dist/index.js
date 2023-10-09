@@ -2379,7 +2379,7 @@ var parseRepoURL = (githubUrl, accessToken) => {
       owner: ownerName,
       name: repoName,
       path: `${ownerName}/${repoName}`,
-      url: `https://${ownerName}:${accessToken}@github.com/${ownerName}/${repoName}.git`
+      url: `https://${accessToken ? `${ownerName}:${accessToken}@` : ""}github.com/${ownerName}/${repoName}.git`
     };
   } else {
     core.setFailed("Invalid GitHub URL");
@@ -2387,14 +2387,15 @@ var parseRepoURL = (githubUrl, accessToken) => {
   }
 };
 var main = async () => {
-  const targetRepoURL = core.getInput("TARGET_REPO_URL");
-  const accessToken = core.getInput("TARGET_REPO_GITHUB_ACCESS_TOKEN");
-  const repoURLData = parseRepoURL(targetRepoURL, accessToken);
+  const repoURL = core.getInput("REPO_URL");
+  const accessToken = core.getInput("REPO_GITHUB_ACCESS_TOKEN");
+  const prefix = core.getInput("PREFIX");
+  const repoURLData = parseRepoURL(repoURL, accessToken);
   if (!repoURLData)
     return;
   const dataEntries = Object.entries(repoURLData);
   dataEntries.forEach(([key, value]) => {
-    core.exportVariable(`TARGET_REPO_${key.toUpperCase()}`, value);
+    core.exportVariable(`${prefix}_${key.toUpperCase()}`, value);
   });
 };
 main();
