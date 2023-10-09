@@ -57,15 +57,15 @@ runs:
       shell: bash
       run: |
         git checkout -B ${{inputs.TARGET_REPO_BRANCH}} --track ${{format('target/{0}', inputs.TARGET_REPO_BRANCH)}}
-    - name: Merge Branches
-      shell: bash
-      run: |
-        git merge ${{format('source/{0}', github.ref_name)}} --allow-unrelated-histories -s recursive -X theirs
     - name: Setup git config for target repo
       shell: bash
       run: |
         git config user.name ${{inputs.BOT_NAME}}
         git config user.email ${{inputs.BOT_EMAIL}}
+    - name: Merge Branches
+      shell: bash
+      run: |
+        git merge ${{format('source/{0}', github.ref_name)}} --allow-unrelated-histories -s recursive -X theirs
     - name: Push to branch
       shell: bash
       run: |
