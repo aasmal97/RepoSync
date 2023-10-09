@@ -1,6 +1,5 @@
 import * as core from "@actions/core";
-import { context } from "@actions/github";
-const parseRepoURL = (githubUrl: string) => {
+const parseRepoURL = (githubUrl: string, accessToken?: string) => {
   // Parse the URL
   const removeExtension = githubUrl.replace(/\.git$/, "");
   const parsedUrl = new URL(removeExtension);
@@ -12,21 +11,27 @@ const parseRepoURL = (githubUrl: string) => {
       owner: ownerName,
       name: repoName,
       path: `${ownerName}/${repoName}`,
+      url: `https://${
+        accessToken ? `${ownerName}:${accessToken}@` : ""
+      }github.com/${ownerName}/${repoName}.git`,
     };
   } else {
-    core.setFailed("Invalid GitHub URL");
+    core.setFailed(`Invalid GitHub URL: ${githubUrl}`);
     return null;
   }
 };
 export const main = async () => {
-  const targetRepoURL = core.getInput("TARGET_REPO_URL");
-  const commitMsg = context.payload.head_commit.message;
-  core.exportVariable("COMMIT_MESSAGE", commitMsg);
-  const repoURLData = parseRepoURL(targetRepoURL);
-  if(!repoURLData) return
+  const repoURL = core.getInput("REPO_URL");
+  const accessToken = core.getInput("REPO_GITHUB_ACCESS_TOKEN");
+  const prefix = core.getInput("PREFIX");
+  const repoURLData = parseRepoURL(repoURL, accessToken);
+  if (!repoURLData) return;
   const dataEntries = Object.entries(repoURLData);
   dataEntries.forEach(([key, value]) => {
-    core.exportVariable(`TARGET_REPO_${key.toUpperCase()}`, value);
+    core.exportVariable(
+      `${prefix ? `${prefix}_` : ""}${key.toUpperCase()}`,
+      value
+    );
   });
 };
 main();
