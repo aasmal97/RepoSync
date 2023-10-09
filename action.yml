@@ -94,6 +94,8 @@ runs:
       shell: bash
       run: |
         git checkout -B ${{inputs.TARGET_REPO_BRANCH}} --track ${{format('target/{0}', inputs.TARGET_REPO_BRANCH)}}
+        git fetch target
+        git branch -avv
     - name: Setup git config for target repo
       shell: bash
       run: |
@@ -102,7 +104,7 @@ runs:
     - name: Merge Branches
       shell: bash
       run: |
-        git merge ${{format('source/{0}', env.SOURCE_REPO_BRANCH)}} --allow-unrelated-histories -s recursive -X theirs
+        git merge ${{format('source/{0}', env.SOURCE_REPO_BRANCH)}} --no-edit --allow-unrelated-histories -s recursive -X theirs
     - name: Push to branch
       shell: bash
       run: |
