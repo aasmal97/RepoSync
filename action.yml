@@ -15,71 +15,58 @@ inputs:
 runs:
   using: 'composite'
   steps: 
-    - name: Move Current Files in Own Repo
+    - name: Remove origin
       shell: bash
       run: |
-        mkdir ${{ format('{0}_{1}', github.event.repository.name, github.ref_name)}} && find . -maxdepth 1 ! -name '.git' -type f -exec mv {} ${{ format('{0}_{1}',github.event.repository.name, github.ref_name)}}/ \;
-
+        git remote rm origin
+    - name: Clear all files
+      shell: bash
+      #we run rm since we still want it tracked on repo, but not in our local env
+      run: |
+        rm -rf *
     - name: Set Target Repo Env Variables
       uses: ./parseGithubUrl
       with: 
         TARGET_REPO_URL: ${{inputs.TARGET_REPO_URL}}
+        TARGET_REPO_GITHUB_ACCESS_TOKEN: ${{inputs.TARGET_REPO_GITHUB_ACCESS_TOKEN}}
     - name: Clone Target Repo
       shell: bash 
       run: | 
-        git clone -o target ${{inputs.TARGET_REPO_URL}}
-    - name: Add remote
+        git remote add target ${{env.TARGET_REPO_URL}}
+        git clone -o target ${{env.TARGET_REPO_URL}}
+    - name: Add Source remote
       shell: bash
       continue-on-error: true
       run: |
         git remote add source ${{format('https://github.com/{0}/{1}.git', github.repository_owner, github.event.repository.name)}}
+    - name: View remotes
+      shell: bash
+      run: |
+        git remote -v
     - name: Get branches
       shell: bash
       run: |
-        git branch -r
+        git fetch source
+        git fetch target
+        git branch -avv
     - name: Check out to Target Repo
       shell: bash
       run: |
-        git checkout -b ${{inputs.TARGET_REPO_BRANCH}} --track ${{format('target/{0}', inputs.TARGET_REPO_BRANCH)}}
-    # - name: Check Out to Target Repo
-    #   uses: actions/checkout@v4
-    #   with:
-    #     #Should be in the form "owner/repoName"
-    #     repository: ${{env.TARGET_REPO_PATH}}
-    #     #Should be the name of the TARGET repo branch
-    #     ref: ${{ inputs.TARGET_REPO_BRANCH}}
-    #     #should be your Github Private Access Token, that owns the target repo
-    #     token: ${{ inputs.TARGET_REPO_GITHUB_ACCESS_TOKEN }}
-
+        git checkout -B ${{inputs.TARGET_REPO_BRANCH}} --track ${{format('target/{0}', inputs.TARGET_REPO_BRANCH)}}
     - name: Merge Branches
       shell: bash
       run: |
         git merge ${{format('source/{0}', github.ref_name)}}
-
     - name: Setup git config for target repo
       shell: bash
       run: |
         git config user.name ${{inputs.BOT_NAME}}
         git config user.email ${{inputs.BOT_EMAIL}}
-
     - name: Push to branch
       shell: bash
       run: |
-        git push -f target ${{inputs.TARGET_REPO_BRANCH}}    
-    # - name: Remove previous files
-    #   continue-on-error: true
-    #   shell: bash
-    #   run: |
-    #     git rm * -r
-    # - name: Copy all files
-    #   shell: bash
-    #   #copies files into Target Repo's Directory
-    #   run: |
-    #     rsync -av --exclude='./' --exclude='.git/' ../ ./
-    # git add *
-    # git commit -m '${{env.COMMIT_MESSAGE}}' 
-    # - name: Perform changes to files and directories
-    #   shell: bash
-    #   run: |
-    #     git reset ${{inputs.}} --hard
-    #     git push -f origin ${{inputs.TARGET_REPO_BRANCH}}
+        git push -f target ${{inputs.TARGET_REPO_BRANCH}}
+    - name: Restore local files
+      shell: bash
+      run: |
+        git fetch && git checkout ${{format('source/{0}', github.event.repository.name)}} 

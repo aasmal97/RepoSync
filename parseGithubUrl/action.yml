@@ -4,6 +4,8 @@ description: Parse github url, and supply owner, repo name, and repo path into l
 inputs:
   TARGET_REPO_URL:
     required: true
+  TARGET_REPO_GITHUB_ACCESS_TOKEN:
+    required: true
 runs:
   using: 'node16'
   main: 'dist/index.js'

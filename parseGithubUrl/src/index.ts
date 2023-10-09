@@ -1,6 +1,5 @@
 import * as core from "@actions/core";
-import { context } from "@actions/github";
-const parseRepoURL = (githubUrl: string) => {
+const parseRepoURL = (githubUrl: string, accessToken: string) => {
   // Parse the URL
   const removeExtension = githubUrl.replace(/\.git$/, "");
   const parsedUrl = new URL(removeExtension);
@@ -12,6 +11,7 @@ const parseRepoURL = (githubUrl: string) => {
       owner: ownerName,
       name: repoName,
       path: `${ownerName}/${repoName}`,
+      url: `https://${accessToken}@github.com/${ownerName}/${repoName}.git`,
     };
   } else {
     core.setFailed("Invalid GitHub URL");
@@ -20,9 +20,8 @@ const parseRepoURL = (githubUrl: string) => {
 };
 export const main = async () => {
   const targetRepoURL = core.getInput("TARGET_REPO_URL");
-  const commitMsg = context.payload.head_commit.message;
-  core.exportVariable("COMMIT_MESSAGE", commitMsg);
-  const repoURLData = parseRepoURL(targetRepoURL);
+  const accessToken = core.getInput("TARGET_REPO_GITHUB_ACCESS_TOKEN");
+  const repoURLData = parseRepoURL(targetRepoURL, accessToken);
   if(!repoURLData) return
   const dataEntries = Object.entries(repoURLData);
   dataEntries.forEach(([key, value]) => {
