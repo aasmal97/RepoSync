@@ -15,6 +15,6 @@ jobs:
     - name: "Parse Github url"
       uses: ./parseGithubUrl
       with: 
-        TARGET_REPO_URL: https://github.com/aasmal97/RepoSync.git
-        TARGET_REPO_GITHUB_ACCESS_TOKEN: ${{secrets.PERSONAL_ACCESS_TOKEN}}
+        REPO_URL: https://github.com/aasmal97/RepoSync.git
+        REPO_GITHUB_ACCESS_TOKEN: ${{secrets.PERSONAL_ACCESS_TOKEN}}
      
