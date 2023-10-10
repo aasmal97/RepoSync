@@ -11,7 +11,7 @@ This Github Action allows a repo to push/merge changes to a another branch in a 
 Below is an example of the minimum appropriate configuration 
 ```
 name: Repo Sync
-uses: aasmal97/repo-sync@1.0.0
+uses: aasmal97/RepoSync@v1.0.0
 with: 
   TARGET_REPO_URL: 'https://github.com/aasmal97/repo-sync.git'
   TARGET_REPO_BRANCH: 'main'
