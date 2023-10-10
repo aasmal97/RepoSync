@@ -77,13 +77,15 @@ runs:
     - name: Check If Target Branch Exists
       shell: bash
       run: |
-        REMOTE_BRANCH=${{inputs.TARGET_REPO_BRANCH}}
-        git ls-remote --exit-code --heads target $REMOTE_BRANCH
-        REMOTE_BRANCH_EXISTS=$?
-        echo "TARGET_REPO_BRANCH_EXISTS=$REMOTE_BRANCH_EXISTS" >> $GITHUB_ENV
-        echo "${{env.TARGET_REPO_BRANCH_EXISTS}}"    
+        if git ls-remote --exit-code --heads target ${{inputs.TARGET_REPO_BRANCH}}; 
+        then
+          echo "TARGET_REPO_BRANCH_EXISTS=1" >> $GITHUB_ENV
+        else
+          echo "TARGET_REPO_BRANCH_EXISTS=0" >> $GITHUB_ENV
+        fi
+        echo '${{env.TARGET_REPO_BRANCH_EXISTS}}'
     - name: Create Target Repo Branch
-      if: env.TARGET_REPO_BRANCH_EXISTS == 1
+      if: env.TARGET_REPO_BRANCH_EXISTS == 0
       shell: bash
       run: |
         git checkout -b ${{inputs.TARGET_REPO_BRANCH}}
