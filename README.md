@@ -15,7 +15,7 @@ uses: aasmal97/RepoSync@v1.0.0
 with: 
   TARGET_REPO_URL: 'https://github.com/aasmal97/repo-sync.git'
   TARGET_REPO_BRANCH: 'main'
-  TARGET_REPO_GITHUB_ACCESS_TOKEN: '${{ secrets.GITHUB_ACCESS_TOKEN }}
+  TARGET_REPO_GITHUB_ACCESS_TOKEN: '${{ secrets.GITHUB_ACCESS_TOKEN }}'
   BOT_NAME: 'Testing bot'
   BOT_EMAIL: 'testing@gmail.com'
 ```
