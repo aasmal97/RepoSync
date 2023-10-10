@@ -1,4 +1,4 @@
-name: Repository Sync
+name: Sync Remote Repositories 
 author: Arky Asmal
 description: Sync one repository branch, with the same or another repo branch
 inputs:
