@@ -1,6 +1,6 @@
 # Repo Sync
 ## Description
-This Github Action allows a repo to push/merge changes to a another branch in a remote or same repository
+This Github Action allows a repository branch to sync changes to a another branch in a remote, or the same repository
 
 ## How this action works
 1. The action first parses the provided targeted github url for the remote repository, and adds in the personal access token to the repo url.
