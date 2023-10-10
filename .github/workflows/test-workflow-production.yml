@@ -1,0 +1,24 @@
+name: "Test Production Repo"
+on: 
+  push: 
+    branches: 
+      - testing
+  pull_request: 
+    branches:
+      - testing
+jobs:
+  Test-Workflow:
+    runs-on: ubuntu-latest
+    environment: prd
+    steps:
+    - uses: actions/checkout@v4
+    - name: Test deploy
+      uses: aasmal97/RepoSync@v1.0.0
+      with: 
+        TARGET_REPO_URL: https://github.com/aasmal97/RepoSyncTesting.git
+        TARGET_REPO_BRANCH: main
+        TARGET_REPO_GITHUB_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }} 
+        BOT_NAME: testing-bot
+        BOT_EMAIL: arkyasmal@gmail.com
+     
+
