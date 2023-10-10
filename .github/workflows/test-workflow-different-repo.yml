@@ -1,4 +1,4 @@
-name: "Test Repo Sync No Branch"
+name: "Test Repo Sync Different Repo"
 on: 
   push: 
     branches: 
