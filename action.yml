@@ -116,7 +116,3 @@ runs:
       with:
         repository: ${{env.SOURCE_REPO_PATH}}
         ref: ${{env.SOURCE_REPO_BRANCH}}
-    - name: Restore local files
-      shell: bash
-      run: |
-        git fetch && git checkout ${{format('source/{0}', env.SOURCE_REPO_BRANCH)}} 
