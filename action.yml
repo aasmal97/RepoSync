@@ -1,4 +1,4 @@
-name: repository-sync
+name: Repository Sync
 author: Arky Asmal
 description: Sync one repository branch, with the same or another repo branch
 inputs:
