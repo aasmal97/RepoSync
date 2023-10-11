@@ -34,9 +34,16 @@ runs:
     - name: Store Source Branch Repo Name
       shell: bash
       # run: |
-      #   echo "SOURCE_REPO_BRANCH=main" >> $GITHUB_ENV
+      #   echo "SOURCE_REPO_BRANCH=${{github.head_ref}}" >> $GITHUB_ENV
+      # echo "SOURCE_REPO_BRANCH=main" >> $GITHUB_ENV
       run: |
-        echo "SOURCE_REPO_BRANCH=${{github.ref_name}}" >> $GITHUB_ENV    
+        if [ "${{ github.event_name }}" == "pull_request" ]; 
+        then
+          echo "SOURCE_REPO_BRANCH=${{github.head_ref}}" >> $GITHUB_ENV
+        else
+          echo "SOURCE_REPO_BRANCH=${{github.ref_name}}" >> $GITHUB_ENV
+        fi
+        echo '${{env.SOURCE_REPO_BRANCH}}'  
     - name: Clear all files
       shell: bash
       #we run rm since we still want it tracked on repo, but not in our local env

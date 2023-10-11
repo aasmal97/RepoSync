@@ -11,7 +11,7 @@ This Github Action allows a repository branch to sync changes to a another branc
 Below is an example of the minimum appropriate configuration 
 ```
 name: Repo Sync
-uses: aasmal97/RepoSync@v1.0.0
+uses: aasmal97/RepoSync@v1.1
 with: 
   TARGET_REPO_URL: 'https://github.com/aasmal97/repo-sync.git'
   TARGET_REPO_BRANCH: 'main'
